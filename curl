@@ -1,0 +1,9 @@
+curl --location 'http://10.80.19.209:5000/send-email' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "emails": [
+        "uofaattacker@gmail.com",
+        "uofavictim1@gmail.com",
+        "uofavictim2@gmail.com"
+    ]
+}'

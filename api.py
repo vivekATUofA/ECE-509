@@ -100,4 +100,4 @@ def api_send_email():
 if __name__ == "__main__":
     # Initialize the database when the app starts
     init_db()
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)

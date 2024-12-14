@@ -61,7 +61,8 @@ The email worm operates in the following stages:
 - Verified JSON formatting for collected data and API communication.
 
 #### Example Output
-![Test Result: Email Sent](images/Result_email_sent.png)
+![Test Result: Email Sent](doc/Result_email_sent.png)
+
 
 ## Challenges
 

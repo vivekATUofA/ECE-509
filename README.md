@@ -42,7 +42,7 @@ The email worm operates in the following stages:
 4. **Propagation**: Uses the collected contacts to send the worm to additional victims.
 
 ### Architecture Diagram
-![Email Worm Attack Flow](images/EmailWormAttackFlow.png)
+![Email Worm Attack Flow](doc/solution_diagram.png)
 
 ## Experiments and Results
 

@@ -88,8 +88,8 @@ def api_send_email():
 
     recipient_emails = data['emails']
     # Email credentials
-    sender_email = 'uofaattacker@gmail.com'
-    sender_password = ' bjqp sloj wuey myuj'  # App password for Gmail
+    sender_email = 'SENDER_EMAIL'
+    sender_password = 'SENDER_APP_PASSWORD'  # App password for Gmail
     zip_path = 'gift_guide.zip'
 
     if not os.path.exists(zip_path):
